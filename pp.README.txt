@@ -1,0 +1,86 @@
+---------------------------------------------------------------------------
+
+This is a single-file interface for running 256x256 Pix2Pix models.
+It is based on Jun-Yan Zhu's implementation of Pix2Pix, which can be found here:
+https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix
+
+Once you have trained a 256x256 Pix2Pix model using Jun-Yan Zhu's cytrain.py, you can get Pix2Pixed images with two lines of code, e.g.
+import pp
+model = pp.Pix2PixModel('sketch_pairs_pix2pix_lsgan')
+output = model(input)
+
+---------------------------------------------------------------------------
+
+Parameters
+
+pp.Pix2PixModel has two parameters:
+
+1. The project name. This is used to find the pre-trained weights. It looks in paths relative to the current directory:
+1a. ./pre-trained/{project}.pth
+1b. ./pre-trained/{project}/{project}.pth
+1c. ./pre-trained/{project}/latest_net_G.pth
+1c. ./checkpoints/{project}/latest_net_G.pth
+
+2. An optional second parameter, boolean (default is True), to determine what happens if the input image is larger than 256x256.
+True: the input image is resized to 256x256, and the output image is resized back from 256x256 to the original size of the image.
+False: the input image is cropped to 256x256, and the 256x256 output image is the result of processing the cropped image.
+
+---------------------------------------------------------------------------
+
+The __main__ code of pp.py is a short test program which takes two or three parameters.
+
+If the first parameter is 'crop' or 'resize', the second parameter is the project and the third parameter is the input.
+Otherwise, the first parameter is the project and the second parameter is the input, and 'resize' is assumed.
+
+The input parameter can be either the filename of a single image or the pathname of a directory of images.
+
+The output goes in ./results/{project}/
+
+Examples:
+python pp.py day2night Valley/
+python pp.py crop sketch_pairs_pix2pix_lsgan datasets/SketchPairs256x256/test/
+
+python pp.py day2night Valley/20211022_081952.jpg
+python pp.py crop sketch_pairs_pix2pix_lsgan datasets/SketchPairs256x256/test/test000.png
+
+---------------------------------------------------------------------------
+
+Dependencies
+os
+sys
+cv2
+numpy 
+torch
+torch.nn 
+functools
+
+I have tested it with Python 3.6.13, PyTorch 1.10.2 and OpenCV 3.4.2, and it will probably work with other similar versions.
+
+---------------------------------------------------------------------------
+
+There is also a short demo program, dusk.py, to show how to call pp. 
+It has one parameter, either the filename of a single image or the pathname of a directory of images.
+
+Examples:
+python dusk.py Valley/
+python dusk.py Valley/20211022_081952.jpg
+
+---------------------------------------------------------------------------
+
+Weights files are too big to upload to GitHub.
+
+The original latest_net_G.pth, as used for the paper "Determining Face Normals using Image-to-Image Translation", is here:
+https://drive.google.com/file/d/1hGL01tZBK2B8gS5bg2wHL7-PH_7VjPmq/view?usp=sharing
+It was trained for 200 epochs.
+
+A more recent file, sketch_pairs_pix2pix_lsgan.pth, is here:
+https://drive.google.com/file/d/1e9Zft0fh8dqnjRYBXGrYfTX4SvcJ0RU5/view?usp=sharing
+The more recent one was trained for 600 epochs.
+
+If the links don't work, e-mail me at peter.varley@um.edu.mt
+
+
+Other people's pre-trained weights files are here:
+http://efrosgans.eecs.berkeley.edu/pix2pix/models-pytorch/
+
+---------------------------------------------------------------------------
